@@ -7,8 +7,9 @@ import java.awt.event.ComponentListener;
 
 public class DrawFrame {
 
-    DrawPanel dp;
-    float scale;
+    private DrawPanel dp;
+    private float scale;
+    private ScaleChangeListener scaleChangeListener;
 
     public DrawFrame(FrameInitInterface fii, DrawInferface d) {
         new DrawFrame(null, fii, d, null);
@@ -23,6 +24,8 @@ public class DrawFrame {
             f.addComponentListener(new ComponentListener() {
                 public void componentResized(ComponentEvent e) {
                     scale = Math.min(dp.getWidth() / mapSize.width, dp.getHeight() / mapSize.height);
+                    if (scaleChangeListener != null)
+                        scaleChangeListener.onScaleChange(scale);
                 }
 
                 @Override
@@ -49,6 +52,16 @@ public class DrawFrame {
 
         f.setVisible(true);
 
+    }
+
+    /**
+     * Calls onScaleChange instantly
+     *
+     * @param scaleChangeListener
+     */
+    public void addScaleChangeListener(ScaleChangeListener scaleChangeListener) {
+        this.scaleChangeListener = scaleChangeListener;
+        scaleChangeListener.onScaleChange(scale);
     }
 
     public float getScale() {
