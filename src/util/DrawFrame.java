@@ -84,6 +84,7 @@ public class DrawFrame {
 
         @Override
         public void paintComponent(Graphics g) {
+            super.paintComponent(g);
             drawable.draw(g, scale);
         }
     }
