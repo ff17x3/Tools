@@ -14,22 +14,29 @@ public class GifFactory {
 
 	private ImageOutputStream outputStream;
 	private GifSequenceWriter writer;
+	private BufferedImage currentImage;
+	private Rectangle size;
+	private PaintGif paintInterface;
+
 	private static final int BUFIMG_TYPE = BufferedImage.TYPE_INT_ARGB;
 
-	public GifFactory(File output, float frameRate, boolean infiniteLoop) throws Exception {
-
+	public GifFactory(Rectangle size, File output, float frameRate, boolean infiniteLoop, PaintGif paintInterface) throws Exception {
+		this.size = size;
+		this.paintInterface = paintInterface;
 		outputStream = new FileImageOutputStream(output);
 		writer = new GifSequenceWriter(outputStream, BUFIMG_TYPE, Math.round(1000 / frameRate), infiniteLoop);
 	}
 
 	/**
-	 * Call this method every time you want to add a Frame to the GIF
+	 * Call this method every time you want to add a frame to the GIF.
+	 * This method calls <code>paintGif(Graphics g)</code> in order to get the frame.
 	 *
 	 * @param g
 	 */
 	public void addDrawedFrame(Graphics g) {
 		Rectangle tempBounds = g.getClipBounds();
-		BufferedImage currentImage = new BufferedImage(tempBounds.width, tempBounds.height, BUFIMG_TYPE);
+		currentImage = new BufferedImage(size.width, size.height, BUFIMG_TYPE);
+		paintInterface.paintGif(g);
 		try {
 			writer.writeToSequence(currentImage);
 		} catch (IOException e) {
@@ -45,4 +52,6 @@ public class GifFactory {
 			e.printStackTrace();
 		}
 	}
+
+
 }
