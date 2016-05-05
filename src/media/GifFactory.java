@@ -31,12 +31,10 @@ public class GifFactory {
 	 * Call this method every time you want to add a frame to the GIF.
 	 * This method calls <code>paintGif(Graphics g)</code> in order to get the frame.
 	 *
-	 * @param g
 	 */
-	public void addDrawedFrame(Graphics g) {
-		Rectangle tempBounds = g.getClipBounds();
+	public void addDrawedFrame() {
 		currentImage = new BufferedImage(size.width, size.height, BUFIMG_TYPE);
-		paintInterface.paintGif(g);
+		paintInterface.paintGif(currentImage.createGraphics());
 		try {
 			writer.writeToSequence(currentImage);
 		} catch (IOException e) {
