@@ -1,5 +1,5 @@
 package util;
 
 public interface Tickable {
-	public void tick(int millisDelta);
+	public void tick(long nanosDelta);
 }
