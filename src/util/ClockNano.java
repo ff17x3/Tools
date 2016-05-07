@@ -33,7 +33,7 @@ public class ClockNano implements Runnable {
         long timeBegin = System.nanoTime();
         synchronized (this) {
             try {
-                toTick.tick((int) Math.round(lastTickDelayNanos * 1e-6));
+                toTick.tick(lastTickDelayNanos);
             } catch (Exception e) {
                 throw new Exception("Tickable ticked by TickMaker threw this Exception", e);
             }
