@@ -10,22 +10,22 @@ public class DrawFrame {
     private DrawPanel dp;
     private float scale;
     private ScaleChangeListener scaleChangeListener;
+	private DimensionF mapSize;
 
-    public DrawFrame(FrameInitInterface fii, DrawInferface d) {
+	public DrawFrame(FrameInitInterface fii, DrawInferface d) {
         new DrawFrame(null, fii, d, null);
     }
 
-    public DrawFrame(Dimension size, FrameInitInterface fii, DrawInferface d, DimensionF mapSize) {
+    public DrawFrame(Dimension size, FrameInitInterface fii, DrawInferface d, DimensionF mapS) {
         JFrame f = new JFrame();
+	    this.mapSize = mapS;
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         if (size == null || size.width <= 0 || size.height <= 0)
             size = new Dimension(500, 500);
-        if (mapSize != null)
+        if (mapS != null)
             f.addComponentListener(new ComponentListener() {
                 public void componentResized(ComponentEvent e) {
-                    scale = Math.min(dp.getWidth() / mapSize.width, dp.getHeight() / mapSize.height);
-                    if (scaleChangeListener != null)
-                        scaleChangeListener.onScaleChange(scale);
+                    updateScale();
                 }
 
                 @Override
@@ -54,7 +54,13 @@ public class DrawFrame {
 
     }
 
-    /**
+	private void updateScale() {
+		scale = Math.min(dp.getWidth() / mapSize.width, dp.getHeight() / mapSize.height);
+		if (scaleChangeListener != null)
+			scaleChangeListener.onScaleChange(scale);
+	}
+
+	/**
      * Calls onScaleChange instantly
      *
      * @param scaleChangeListener
@@ -62,6 +68,10 @@ public class DrawFrame {
     public void addScaleChangeListener(ScaleChangeListener scaleChangeListener) {
         this.scaleChangeListener = scaleChangeListener;
         scaleChangeListener.onScaleChange(scale);
+    }
+    public void setMapSize(DimensionF mapSize){
+	    this.mapSize = mapSize;
+	    updateScale();
     }
 
     public float getScale() {
