@@ -7,52 +7,53 @@ import java.awt.event.ComponentListener;
 
 public class DrawFrame {
 
-    private DrawPanel dp;
-    private float scale;
-    private ScaleChangeListener scaleChangeListener;
+	private DrawPanel dp;
+	private float scale;
+	private ScaleChangeListener scaleChangeListener;
 	private DimensionF mapSize;
 
+
 	public DrawFrame(FrameInitInterface fii, DrawInferface d) {
-        new DrawFrame(null, fii, d, null);
-    }
+		this(null, fii, d, null);
+	}
 
-    public DrawFrame(Dimension size, FrameInitInterface fii, DrawInferface d, DimensionF mapS) {
-        JFrame f = new JFrame();
-	    this.mapSize = mapS;
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        if (size == null || size.width <= 0 || size.height <= 0)
-            size = new Dimension(500, 500);
-        if (mapS != null)
-            f.addComponentListener(new ComponentListener() {
-                public void componentResized(ComponentEvent e) {
-                    updateScale();
-                }
+	public DrawFrame(Dimension size, FrameInitInterface fii, DrawInferface d, DimensionF mapS) {
+		JFrame f = new JFrame();
+		this.mapSize = mapS;
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		if (size == null || size.width <= 0 || size.height <= 0)
+			size = new Dimension(500, 500);
+		if (mapS != null)
+			f.addComponentListener(new ComponentListener() {
+				public void componentResized(ComponentEvent e) {
+					updateScale();
+				}
 
-                @Override
-                public void componentHidden(ComponentEvent arg0) {
+				@Override
+				public void componentHidden(ComponentEvent arg0) {
 
-                }
+				}
 
-                @Override
-                public void componentMoved(ComponentEvent arg0) {
+				@Override
+				public void componentMoved(ComponentEvent arg0) {
 
-                }
+				}
 
-                @Override
-                public void componentShown(ComponentEvent arg0) {
+				@Override
+				public void componentShown(ComponentEvent arg0) {
 
-                }
-            });
+				}
+			});
 
-        dp = new DrawPanel(d, size);
-        f.add(dp);
-        f.pack();
-        if (fii != null)
-            fii.initFrame(f, dp);
+		dp = new DrawPanel(d, size);
+		f.add(dp);
+		f.pack();
+		if (fii != null)
+			fii.initFrame(f, dp);
 
-        f.setVisible(true);
+		f.setVisible(true);
 
-    }
+	}
 
 	private void updateScale() {
 		scale = Math.min(dp.getWidth() / mapSize.width, dp.getHeight() / mapSize.height);
@@ -61,46 +62,70 @@ public class DrawFrame {
 	}
 
 	/**
-     * Calls onScaleChange instantly
-     *
-     * @param scaleChangeListener
-     */
-    public void addScaleChangeListener(ScaleChangeListener scaleChangeListener) {
-        this.scaleChangeListener = scaleChangeListener;
-        scaleChangeListener.onScaleChange(scale);
-    }
-    public void setMapSize(DimensionF mapSize){
-	    this.mapSize = mapSize;
-	    updateScale();
-    }
+	 * Calls onScaleChange instantly
+	 * ATTENTION: only works when DimensionF mapS != null in DrawFrame Constructor
+	 *
+	 * @param scaleChangeListener
+	 */
+	public void addScaleChangeListener(ScaleChangeListener scaleChangeListener) {
+		this.scaleChangeListener = scaleChangeListener;
+		scaleChangeListener.onScaleChange(scale);
+	}
 
-    public float getScale() {
-        return scale;
-    }
+	public void setMapSize(DimensionF mapSize) {
+		this.mapSize = mapSize;
+		updateScale();
+	}
 
-    public void redraw() {
-        dp.repaint();
-    }
+	public float getScale() {
+		return scale;
+	}
 
-    public class DrawPanel extends JPanel {
+	public void redraw() {
+		dp.repaint();
+	}
 
-        DrawInferface drawable;
+	public class DrawPanel extends JPanel {
 
-        public DrawPanel(DrawInferface d, Dimension size) {
-            super();
-            setPreferredSize(size);
-            drawable = d;
-        }
+		DrawInferface drawable;
 
-        @Override
-        public void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            drawable.draw(g, scale);
-        }
-    }
+		public DrawPanel(DrawInferface d, Dimension size) {
+			super();
+			setPreferredSize(size);
+			drawable = d;
+		}
 
-    public int getWidth() {
-        return dp.getWidth();
-    }
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+
+			drawable.draw(g, scale);
+		}
+	}
+
+	public int getWidth() {
+		if (dp == null) {
+			return 0;
+		}
+		return dp.getWidth();
+	}
+
+	public int getHeigth() {
+		if (dp == null) {
+			return 0;
+		}
+		return dp.getHeight();
+	}
+
+	public static void fillRect(Graphics g, double x, double y, double w, double h) {
+
+
+		int ix = (int) Math.round(x);
+		int iy = (int) Math.round(y);
+		int iw = (int) Math.round(w + x - ix);
+		int ih = (int) Math.round(h + y - iy);
+
+		g.fillRect(ix, iy, iw, ih);
+	}
 
 }
