@@ -69,7 +69,8 @@ public class DrawFrame {
 	 */
 	public void addScaleChangeListener(ScaleChangeListener scaleChangeListener) {
 		this.scaleChangeListener = scaleChangeListener;
-		scaleChangeListener.onScaleChange(scale);
+		if (scaleChangeListener != null)
+			scaleChangeListener.onScaleChange(scale);
 	}
 
 	public void setMapSize(DimensionF mapSize) {
